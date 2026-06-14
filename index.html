@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="UTF-8">
+ <title>Cliente Web - Gestión de Departamentos</title>
+ <style>
+ body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
+ h2 { color: #333; }
+ table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white;}
+ th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+ th { background-color: #dc3545; color: white; }
+ button { background-color: #007bff; color: white; padding: 10px 15px; border: none; cursor:
+pointer; font-size: 16px; border-radius: 4px; }
+ button:hover { background-color: #0056b3; }
+ </style>
+</head>
+<body>
+ <h2>Listado de Departamentos (Desde API REST)</h2>
+ <button id="btnCargar">Cargar / Sincronizar Departamentos</button>
+ <table>
+ <thead>
+<tr>
+ <th>ID</th>
+ <th>Nombre Departamento</th>
+ <th>Número de Trabajadores</th>
+ </tr>
+ </thead>
+ <tbody id="tabla-cuerpo">
+ </tbody>
+ </table>
+ <script>
+ const URL_API = "http://localhost:8080/api/departamentos";
+ document.getElementById('btnCargar').addEventListener('click', () => {
+ // 1. Realizar la petición GET al backend
+ fetch(URL_API)
+ .then(response => {
+ if (!response.ok) {
+ throw new Error("Error en la respuesta del servidor");
+ }
+ return response.json(); // Convertir el texto JSON a Objeto JS
+ })
+ .then(departamentos => {
+ const cuerpoTabla = document.getElementById('tabla-cuerpo');
+ cuerpoTabla.innerHTML = ""; // Limpiar filas antiguas
+ // 2. Recorrer los departamentos y generar las filas HTML dinámicamente
+ departamentos.forEach(dep => {
+ const fila = document.createElement('tr');
+ fila.innerHTML = `
+ <td>${dep.codigo}</td>
+ <td>${dep.nombre}</td>
+ <td>${dep.numerotra}</td>
+`;
+ cuerpoTabla.appendChild(fila);
+ });
+ })
+ .catch(error => {
+ alert("Error de conexión: No se pudo acceder a la API.");
+ console.error("Detalle del error:", error);
+ });
+ });
+ </script>
+</body>
+</html>
